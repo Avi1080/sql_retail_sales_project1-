@@ -144,42 +144,36 @@ order by
 
 8. **Write a SQL query to find the top 5 customers based on the highest total sales **:
 ```sql
-SELECT 
-    customer_id,
-    SUM(total_sale) as total_sales
-FROM retail_sales
-GROUP BY 1
-ORDER BY 2 DESC
-LIMIT 5
+select customer_id, sum(total_sale) as total_sale
+from sql_project_p1.retail_sales
+group by customer_id
+order by total_sale desc    
+limit 5;
 ```
 
 9. **Write a SQL query to find the number of unique customers who purchased items from each category.**:
 ```sql
-SELECT 
-    category,    
-    COUNT(DISTINCT customer_id) as cnt_unique_cs
-FROM retail_sales
-GROUP BY category
+select category, count(distinct customer_id) as total_unique_customers 
+from sql_project_p1.retail_sales
+group by category;
 ```
 
 10. **Write a SQL query to create each shift and number of orders (Example Morning <12, Afternoon Between 12 & 17, Evening >17)**:
 ```sql
-WITH hourly_sale
-AS
-(
-SELECT *,
-    CASE
-        WHEN EXTRACT(HOUR FROM sale_time) < 12 THEN 'Morning'
-        WHEN EXTRACT(HOUR FROM sale_time) BETWEEN 12 AND 17 THEN 'Afternoon'
-        ELSE 'Evening'
-    END as shift
-FROM retail_sales
+with cte3 as (
+select *, 
+	case
+    when hour(sale_time) <= 12 then 'Morning' 
+    when hour(sale_time) between 12 and 17 then 'Afternoon' 
+    else 'Evening'
+    end 'shift'
+from sql_project_p1.retail_sales
 )
-SELECT 
-    shift,
-    COUNT(*) as total_orders    
-FROM hourly_sale
-GROUP BY shift
+
+select shift, count(transactions_id) as total_orders 
+from cte3
+group by shift
+order by total_orders desc;
 ```
 
 ## Findings
